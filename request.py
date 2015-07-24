@@ -7,7 +7,7 @@ from itertools import chain
 from datetime import datetime
 
 user = 'DarwinSenior'
-token = '21631a6b40012a3604a55d23e7f263e7d1f7a3b8'
+token = '18d17ed0296587032e516b5a588c0335d59a5c2f'
 agent = 'DarwinSenior'
 
 class RequestAgent(object):
@@ -40,7 +40,6 @@ class RequestAgent(object):
         Assume req will be json data
         """
         res = self.session.send(req.prepare())
-        
         return res
 
     def check_ratelimit(self, limit_type='core'):
@@ -52,6 +51,8 @@ class RequestAgent(object):
         req = self.request('/rate_limit')
         # data = response(req)['resources']
         data = self.response(req).json()
+        if data.get('message') == 'Bad credentials':
+            raise ValueError('The credential is invalid')
         data = data['resources'][limit_type]
 
         if (data['remaining']<1):
