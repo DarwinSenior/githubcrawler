@@ -32,5 +32,5 @@ while True:
         i += 1
     except:
         print('exception at page_%d'%i)
-        traceback.print_exec(file=sys.stdout)
+        traceback.print_exc(file=sys.stdout)
         break
