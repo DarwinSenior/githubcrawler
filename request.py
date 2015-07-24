@@ -67,7 +67,7 @@ class RequestAgent(object):
         For all the github apis that are not set of data
         """
         self.check_ratelimit()
-        req = self.request(url, page=start_page)
+        req = self.request(url)
         res = self.response(req)
         if (res.ok):
             return res.json()
