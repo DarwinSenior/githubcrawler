@@ -15,6 +15,7 @@ class RequestAgent(object):
         self.session = requests.session()
         self.AUTH = HTTPBasicAuth(user, token)
         self.agent = agent
+        self.status = ""
 
     def request(self, url, method="GET", limit=100, page=1, since=None):
         """
@@ -60,6 +61,7 @@ class RequestAgent(object):
             until = datetime.utcfromtimestamp(data['reset'])
             interval = (until-now).total_seconds()
             print("rate limit(%d) reached, sleep until"%(data['limit'], until.ctime()))
+            print('Current status: %s'%self.status)
             time.sleep(interval)
             print("resume")
 

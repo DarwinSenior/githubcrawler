@@ -23,6 +23,7 @@ i = int(istart)
 since = getsince(i-1)
 while True:
     try:
+        agent.status = 'Start parsing file #%d'%(i)
         result = agent.get_all_users(i, since)
         content = "\n".join(['%s:%s,%d'%(u['type'][:4], u['login'], u['id']) for u in result])
         x = open('./data/page_%d.txt'%i, 'w')
