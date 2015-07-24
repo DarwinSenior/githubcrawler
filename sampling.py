@@ -13,6 +13,14 @@ def get_sample(users, takes=10000):
     size = len(users)
     return [users[int(samples[idx]*size)] for idx in range(1, takes)]
 
+def getuser(idx):
+    pageidx = int(idx/100)
+    lineidx = int(idx%100)
+    page = open('data/page_%i.txt'%(pageidx+1), 'r')
+    line = page.readlines()[lineidx]
+    user = line[5:].split(',')[0]
+    page.close()
+    return user
 
 def get_users(users, agent):
     '''
