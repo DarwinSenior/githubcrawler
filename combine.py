@@ -26,6 +26,8 @@ def combiner(path, ffrom, fto, inputname, outputname):
         fin.close()
         i += 1
         inputnamei = inputname.replace('*', str(i))
+        if i%1000==0:
+            print('finish the file %d'%i)
 
     fout.close()
     print('Compressed file from %s to %s'%(ffrom, str(i-1)))
