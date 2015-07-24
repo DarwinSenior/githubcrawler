@@ -6,9 +6,6 @@ import json
 from itertools import chain
 from datetime import datetime
 
-user = 'DarwinSenior'
-token = '18d17ed0296587032e516b5a588c0335d59a5c2f'
-agent = 'DarwinSenior'
 
 class RequestAgent(object):
     def __init__(self, user, token, agent):
@@ -60,9 +57,9 @@ class RequestAgent(object):
             now = datetime.utcnow()
             until = datetime.utcfromtimestamp(data['reset'])
             interval = (until-now).total_seconds()
-            print("rate limit(%d) reached, sleep until"%(data['limit'], until.ctime()))
+            print("rate limit(%d) reached, sleep until %s"%(data['limit'], until.ctime()))
             print('Current status: %s'%self.status)
-            time.sleep(interval)
+            time.sleep(interval+300)
             print("resume")
 
     def get_single(self, url):
@@ -146,6 +143,5 @@ class RequestAgent(object):
     def get_repo_forks(self, username, repo):
         return self.get_collection('/repos/%s/%s/forks'%(username, repo))
 
-default_agent = RequestAgent(user, token, agent)
 
 

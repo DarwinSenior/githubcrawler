@@ -3,8 +3,12 @@ import request
 import traceback
 
 agent = request.default_agent
-istart = sys.argv[1]
+istart = sys.argv[3]
 
+username = sys.argv[1]
+password = sys.argv[2]
+
+agent = request.RequestAgent(username, password, username)
 def getsince(filenum):
     if (filenum==0): return 0 # since is then not important
     try:
