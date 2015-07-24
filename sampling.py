@@ -4,6 +4,7 @@ This module contains the sampling util functions
 
 import request
 import numpy as np
+from __future__ import unicode_literals
 
 def get_sample(users, takes=10000):
     '''
@@ -22,6 +23,12 @@ def getuser(idx):
     page.close()
     return user
 
+def cleanuser(userdata):
+    cleaneddata = {}
+    for key,val in userdata:
+        if not '_url' in key:
+            cleaneddata[key] = val
+    return cleaneddata
 def get_users(users, agent):
     '''
     The agent shall be the request agent
