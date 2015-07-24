@@ -57,8 +57,8 @@ class RequestAgent(object):
 
         if (data['remaining']<1):
             now = datetime.utcnow()
-            util = datetime.utcfromtimestamp(data['reset'])
-            interval = (util-now).total_seconds()
+            until = datetime.utcfromtimestamp(data['reset'])
+            interval = (until-now).total_seconds()
             print("rate limit(%d) reached, sleep until"%(data['limit'], until.ctime()))
             time.sleep(interval)
             print("resume")
