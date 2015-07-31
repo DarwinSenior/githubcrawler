@@ -2,9 +2,9 @@
 This module contains the sampling util functions
 '''
 
+# from __future__ import unicode_literals
 import request
 import numpy as np
-from __future__ import unicode_literals
 
 def get_sample(users, takes=10000):
     '''
@@ -25,7 +25,7 @@ def getuser(idx):
 
 def cleanuser(userdata):
     cleaneddata = {}
-    for key,val in userdata:
+    for key,val in userdata.iteritems():
         if not '_url' in key:
             cleaneddata[key] = val
     return cleaneddata
