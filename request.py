@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import requests
+import sys
 from requests.auth import HTTPBasicAuth
 import time
 import json
@@ -17,7 +18,7 @@ class RequestAgent(object):
         self.agent = agent
         self.status = ""
 
-    def request(self, url, method="GET", limit=100, page=1, since=None):
+    def request(self, url, method="GET", limit=100, page=1, since=None, addHeader=None):
         """
         domain is 'https://api.github.com/'
         For limit and page https://developer.github.com/v3/#pagination
@@ -26,12 +27,18 @@ class RequestAgent(object):
         req = requests.Request(method, 'https://api.github.com'+url)
         req.auth = self.AUTH
         req.headers['User-Agent'] = self.agent
+        if addHeader:
+            for key, value in addHeader.iteritems():
+                req.headers[key] = value
         req.params['per_page'] = limit
         req.params['page'] = page
         return req
 
-    def request_next(self, url, method="GET"):
+    def request_next(self, url, method="GET", addHeader=None):
         req = requests.Request(method, url)
+        if addHeader:
+            for key, value in addHeader.iteritems():
+                req.headers[key] = value
         req.auth = self.AUTH
         req.headers['User-Agent'] = self.agent
         return req
@@ -56,7 +63,7 @@ class RequestAgent(object):
             raise ValueError('The credential is invalid')
         data = data['resources'][limit_type]
 
-        if (data['remaining']<1):
+        if (data['remaining']<5):
             now = datetime.utcnow()
             until = datetime.utcfromtimestamp(data['reset'])
             interval = (until-now).total_seconds()
@@ -65,35 +72,39 @@ class RequestAgent(object):
             time.sleep(interval+600) #to ensure enough time for sleeping
             print("resume")
 
-    def get_single(self, url):
+    def get_single(self, url, addHeader=None):
         """
         For all the github apis that are not set of data
         """
         self.check_ratelimit()
-        req = self.request(url)
+        req = self.request(url, addHeader=addHeader)
         res = self.response(req)
         if (res.ok):
             return res.json()
         else:
             res.raise_for_status()
 
-    def get_collection(self, url, limit=0, start_page=1):
+    def get_collection(self, url, limit=0, start_page=1, addHeader=None):
         """
         For all the github apis that returns a collection of data,
         since there is a 100 page limit, we have to ask for multiple request
         """
         self.check_ratelimit()
         data = []
-        req = self.request(url, page=start_page)
+        req = self.request(url, page=start_page, addHeader=addHeader)
         res = self.response(req)
         count = 0
         while res.links.get('next') and (limit==0 or count<limit-1):
             if not res.ok: res.raise_for_status()
             data.append(res.json())
             nexturl = res.links['next']['url']
-            req = self.request_next(nexturl)
+            self.check_ratelimit()
+            req = self.request_next(nexturl, addHeader=addHeader)
             res = self.response(req)
             count += 1
+            sys.stdout.write('\rCount: %d'%count)
+            sys.stdout.flush()
+        sys.stdout.write('\n');
         data.append(res.json())
         return list(chain.from_iterable(data))
 
@@ -131,8 +142,11 @@ class RequestAgent(object):
         """
         return self.get_collection('/users/%s/followers'%username)
 
-    def get_repo_stargazers(username, repo):
-        return self.get_collection('/repos/%s/%s/stargazers'%(username, repo))
+    def get_repo_stargazers(self, username, repo):
+        return self.get_collection('/repos/%s/%s/stargazers'%(username, repo), addHeader={'Accept': 'application/vnd.github.v3.star+json'})
+
+    def get_user_starred(self, username):
+        return self.get_collection('/users/%s/starred'%(username), addHeader={'Accept': 'application/vnd.github.v3.star+json'})
         
     def get_organization(self, orgnization):
         return self.get_single('/orgs/%s'%orgnization)
@@ -146,6 +160,9 @@ class RequestAgent(object):
     def get_repo_forks(self, username, repo):
         return self.get_collection('/repos/%s/%s/forks'%(username, repo))
 
+<<<<<<< HEAD
 default_agent = RequestAgent(user, token, agent)
 
 
+=======
+>>>>>>> 1604883371082e8a879337c07176fef06a3e654a

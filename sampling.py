@@ -31,7 +31,7 @@ sample_size = 10000
 
 
 def combineuserdata():
-    i = 0 
+    i = 0
     data = []
     while True:
         if os.path.isfile('userdata/users%i.json'%i):
@@ -79,7 +79,7 @@ def getuserseeds(agent, sample_size=sample_size, random_user=None):
 #     random_users = map(getuser, random_idxs)
 #     with open('random_users.json', 'w') as tmpfile:
 #         json.dump(random_users, tmpfile)
-    
+
     # users_data = []
     # print('start to get users')
     # for i,user in enumerate(random_users):
@@ -90,7 +90,7 @@ def getuserseeds(agent, sample_size=sample_size, random_user=None):
     #     users_data.append(user_data)
     #     with open('progress.json', 'w') as progressfile:
     #         json.dump(users_data, progressfile)
-        
+
     # follower_bins = followers_bin(users_data)
     # return follower_bins
 
@@ -124,4 +124,4 @@ def get_followers(users, agent):
         followers.extend(['']*(maxlen-len(followers)))
     return followers
 
- 
+
