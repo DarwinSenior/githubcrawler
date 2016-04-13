@@ -6,9 +6,6 @@ import json
 from itertools import chain
 from datetime import datetime
 
-user = 'DarwinSenior'
-token = 'westlife0824'
-agent = 'DarwinSenior'
 
 class RequestAgent(object):
     def __init__(self, user, token, agent):
@@ -62,7 +59,7 @@ class RequestAgent(object):
             interval = (until-now).total_seconds()
             print("rate limit(%d) reached, sleep until %s"%(data['limit'], until.ctime()))
             print('Current status: %s'%self.status)
-            time.sleep(interval+600) #to ensure enough time for sleeping
+            time.sleep(interval+300)
             print("resume")
 
     def get_single(self, url):
@@ -146,6 +143,5 @@ class RequestAgent(object):
     def get_repo_forks(self, username, repo):
         return self.get_collection('/repos/%s/%s/forks'%(username, repo))
 
-default_agent = RequestAgent(user, token, agent)
 
 
